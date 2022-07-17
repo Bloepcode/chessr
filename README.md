@@ -15,7 +15,7 @@ Word nog aan gewerkt...
   - Notes: Start kalibratie modus **elke keer** als je de camera of het schaakbord verplaatst!
 - `-b/--board`: `board.txt`, het bestand waar het bord in wordt opgeslagen
   - Default: `None` begin met de begin positie.
-- `-s/--skill` **NOG NIET GEIMPLEMENTEERD!**
+- `-s/--skill` De skill van de ai (0 tot 20)
   - Default: `5`
 - `-c/--cam` Het ID van de camera
   - Default: `2`

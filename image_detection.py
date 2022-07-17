@@ -105,7 +105,7 @@ class Image_Detection:
         while self.waiting:
             stills = 0
             while True:
-                cv2.waitKey(200)
+                cv2.waitKey(50)
                 ret, frame = cap.read()
                 sim = self.match_self(frame)
                 if sim < 2:
@@ -113,7 +113,7 @@ class Image_Detection:
                 else:
                     stills = 0
 
-                if stills >= 3:
+                if stills >= 2:
                     break
             print("Matching..")
             a, b, sim = self.match(cap.read()[1])
@@ -164,13 +164,18 @@ class Image_Detection:
         boxes = self.gen_boxes(next)
         values = []
 
+        tasks = []
+
         for x in range(8):
-            row = []
+            task_row = []
             for y in range(8):
-                value = self.squares[x][y].match(boxes[x][y])
+                task_row.append(self.squares[x][y].match(boxes[x][y]))
+            tasks.append(task_row)
+
+        for x, row in enumerate(tasks):
+            for y, task in enumerate(row):
+                value = task.result()
                 values.append({"value": value, "pos": (x, y)})
-                row.append("")
-                # row.append(f"{x}, {y}")
 
         values = sorted(values, key=lambda key: key["value"])
 
@@ -209,7 +214,5 @@ class Image_Detection:
 
         out("Herstel alles")
         input("Druk op enter wanneer je het hebt gedaan...")
-
-        self.wait_until_moved(cap)
 
         return self.minimum_change

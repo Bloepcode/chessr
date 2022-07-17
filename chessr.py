@@ -28,10 +28,8 @@ NUM_TO_LETTER = {
 
 
 class Chessr():
-    def __init__(self):
+    def __init__(self, codes, board, skill, cam):
         self.gui = None
-
-    def init(self, codes, board, skill, cam):
         # Init board
         self.board = chess.Board()
 
@@ -42,12 +40,11 @@ class Chessr():
                 for action in f.read().split("\n"):
                     if action == "":
                         continue
-                    self.board.push_uci(action)
+                    self.board.push(chess.Move(chess.parse_square(
+                        action[0:2]), chess.parse_square(action[2:4])))
         else:
             with open("board.txt", "w") as f:
                 f.write("")
-
-        self.write_board(self.board)
 
         # Get camera
         self.cap = cv2.VideoCapture(cam)
@@ -94,7 +91,7 @@ class Chessr():
 
         # Init stockfish
         self.stockfish = Stockfish(
-            "/opt/homebrew/Cellar/stockfish/15/bin/stockfish")
+            "/opt/homebrew/Cellar/stockfish/15/bin/stockfish", parameters={"Skill Level": skill})
         self.stockfish.set_fen_position(self, self.board.fen())
 
         # Start loop
@@ -110,6 +107,18 @@ class Chessr():
     def write_action(self, action):
         with open("board.txt", "a") as f:
             f.write(action + "\n")
+
+    def remove_actions(self):
+        with open("board.txt", "r") as f:
+            lines = f.read()
+        with open("board.txt", "w") as f:
+            print(lines)
+            lines = lines.split("\n")[:-3]
+            final = ""
+            for line in lines:
+                print("Remove", line)
+                final += line + "\n"
+            f.write(final)
 
     def get_points(self):
         out("Klik op de 4 punten van het schaakbord", wait=False)
@@ -225,6 +234,8 @@ class Chessr():
                 self.board.pop()
                 self.board.pop()
 
+                self.remove_actions()
+
                 # Update stockfish
                 self.stockfish.set_fen_position(self.board.fen)
 
@@ -324,11 +335,11 @@ class Chessr():
                     ai_task = self.do_ai_move()
                     out("\n\nChessr is aan de beurt")
                     move = ai_task.result()
+                    self.write_action(move)
                     self.write_board(self.board)
                     out(f"Ik kies {move}", wait=False)
                     print("Kan je dit voor mij zetten?")
                     self.check_move(move)
-                    self.write_action(move)
                 if self.board.is_game_over():
                     out("Game over")
                     self.popup_options("Game over...", ["Exit"]).result()

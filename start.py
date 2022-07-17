@@ -18,15 +18,13 @@ parser.add_argument("-a", "--cam", help="the camera ID", default=2)
 
 args = parser.parse_args()
 
-chessr = Chessr()
+chessr = Chessr(args.codes, args.board, args.skill, args.cam)
 
 print("Chessr is geinitialiseerd!\n\n\n")
 
 gui = Gui()
 
 chessr.gui = gui
-
-chessr.init(args.codes, args.board, args.skill, args.cam)
 
 while True:
     if chessr.mainloop_task.done():
