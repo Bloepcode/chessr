@@ -28,10 +28,13 @@ NUM_TO_LETTER = {
 
 
 class Chessr():
-    def __init__(self, codes, board, skill, cam):
+    def __init__(self, codes, board, skill, cam, fen):
         self.gui = None
         # Init board
         self.board = chess.Board()
+
+        if fen:
+            self.board.set_fen(fen)
 
         # Set board if nessecary else reset
         if board:

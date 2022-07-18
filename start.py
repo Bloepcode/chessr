@@ -15,10 +15,11 @@ parser.add_argument(
     "-b", "--board", help="Select the start board", default=None)
 parser.add_argument("-s", "--skill", help="Skill level for AI", default=5)
 parser.add_argument("-a", "--cam", help="the camera ID", default=2)
+parser.add_argument("-f", "--fen", help="The starting fen", default=None)
 
 args = parser.parse_args()
 
-chessr = Chessr(args.codes, args.board, args.skill, args.cam)
+chessr = Chessr(args.codes, args.board, args.skill, args.cam, args.fen)
 
 print("Chessr is geinitialiseerd!\n\n\n")
 

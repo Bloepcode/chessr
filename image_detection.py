@@ -203,8 +203,8 @@ class Image_Detection:
                                 self.bl, frame, (1024, 1024))
         boxes = self.gen_boxes(frame)
 
-        val_1 = test_square_1.match(boxes[0][7])
-        val_2 = test_square_2.match(boxes[0][0])
+        val_1 = test_square_1.match(boxes[0][7]).result()
+        val_2 = test_square_2.match(boxes[0][0]).result()
 
         highest = val_1 if val_1 > val_2 else val_2
 

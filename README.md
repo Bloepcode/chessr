@@ -19,3 +19,5 @@ Word nog aan gewerkt...
   - Default: `5`
 - `-c/--cam` Het ID van de camera
   - Default: `2`
+- `-f/--fen` De start fen van het bord
+  - Default `None` Begint met het normale bord
