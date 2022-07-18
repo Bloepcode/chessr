@@ -43,8 +43,7 @@ class Chessr():
                 for action in f.read().split("\n"):
                     if action == "":
                         continue
-                    self.board.push(chess.Move(chess.parse_square(
-                        action[0:2]), chess.parse_square(action[2:4])))
+                    self.board.push_uci(action)
         else:
             with open("board.txt", "w") as f:
                 f.write("")
@@ -86,8 +85,8 @@ class Chessr():
                 }, f)
 
         # Warn with bad calibration
-        if minimum_change >= 0.8:
-            out("Het licht en schaakbord zijn niet heel goed waardoor er meer fouten dan normaal kunnen worden gemaakt...")
+        # if minimum_change >= 0.8:
+            # out("Het licht en schaakbord zijn niet heel goed waardoor er meer fouten dan normaal kunnen worden gemaakt...")
 
         # Set minimum change
         self.im_de.minimum_change = minimum_change
@@ -100,8 +99,11 @@ class Chessr():
         # Start loop
         self.mainloop_task = self.mainloop()
 
-    def write_board(self, board):
-        svg = chess.svg.board(board)
+    def write_board(self, board, move=None):
+        if move:
+            svg = chess.svg.board(board, lastmove=chess.Move.from_uci(move))
+        else:
+            svg = chess.svg.board(board)
 
         with open("out.svg", "w") as f:
             f.write(svg)
@@ -306,6 +308,7 @@ class Chessr():
         out("Welkom bij chessr singleplayer!")
         try:
             while True:
+                self.write_board(self.board)
                 self.gui.set_turn(self.board.turn)
                 self.turn = self.board.turn
 
@@ -323,7 +326,7 @@ class Chessr():
                         # Move stockfish ai
                         self.move_stockfish(move)
                         # Write to svg
-                        self.write_board(self.board)
+                        self.write_board(self.board, move=move)
                         out(f"{move} is gelukt!")
                     else:
                         # Invalid move
@@ -339,7 +342,7 @@ class Chessr():
                     out("\n\nChessr is aan de beurt")
                     move = ai_task.result()
                     self.write_action(move)
-                    self.write_board(self.board)
+                    self.write_board(self.board, move=move)
                     out(f"Ik kies {move}", wait=False)
                     print("Kan je dit voor mij zetten?")
                     self.check_move(move)
